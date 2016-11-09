@@ -13,6 +13,7 @@ import javax.management.BadAttributeValueExpException;
 
 import exception.ProdutoInexistenteException;
 import exception.ProdutoNaoEstaNoCarrinhoException;
+import exception.ProdutosDiferentesException;
 import exception.QuantidadeInsuficienteException;
 import exception.ValorInvalidoException;
 import genus.Tipos.Produto;
@@ -27,10 +28,6 @@ public class VendaModificada {
 	List<Produto> listaDeProdutos=new ArrayList<Produto>();
 	List<Double> QuantidadeDeProdutos=new ArrayList<Double>();
 	List<Produto> estoque=new ArrayList<Produto>();
-	
-	
-
-
 
 	int IDvenda;
     int IDvendedor;
@@ -98,6 +95,10 @@ public class VendaModificada {
 	public List<Produto> getListaDeProdutos() {
 		return listaDeProdutos;
 	}
+	
+	public List<Double> getListaDeQuantidades() {
+		return QuantidadeDeProdutos;
+	}
 
 	public void setListaDeProdutos(List<Produto> listaDeProdutos) {
 		this.listaDeProdutos = listaDeProdutos;
@@ -119,7 +120,8 @@ public class VendaModificada {
 		QuantidadeDeProdutos = quantidadeDeProdutos;
 	}
 	
-	public void adicionarAVenda(Produto produtoParaVenda,double novaQuantidade){
+	public void adicionarAVenda(Produto produtoParaVenda, double novaQuantidade){
+		
 		if(novaQuantidade<=0.0){
 			throw new ValorInvalidoException();
 		}
@@ -129,16 +131,13 @@ public class VendaModificada {
 		int index;
 		int localEstoque=-1;
 		
-		
 		for(int j=0;j<estoque.size();j++){
-			
 			if(estoque.get(j).getIDproduto()==produtoParaVenda.getIDproduto()){
 				localEstoque=j;
-				
 				break;
 			}
-			
 		}
+		
 		if(localEstoque==-1){
 			
 			throw new ProdutoInexistenteException();
@@ -267,7 +266,65 @@ public class VendaModificada {
 	}
 
 	
+public void adicionarAVenda(Produto produtoA, Produto produtoB, double novaQuantidade) throws ProdutosDiferentesException{
+		
+		if(novaQuantidade<=0.0){
+			throw new ValorInvalidoException();
+		}
+		
+		if(produtoA != produtoB){
+			throw new ProdutosDiferentesException();
+		}
+		
+		int localNoCarrinho=-1;
+		Produto produtoParaComparacao=new Produto();
+		int index;
+		int localEstoque=-1;
+		
+		for(int j=0;j<estoque.size();j++){
+			if(estoque.get(j).getIDproduto()==produtoA.getIDproduto()){
+				localEstoque=j;
+				break;
+			}
+		}
+		
+		if(localEstoque==-1){
+			
+			throw new ProdutoInexistenteException();
+		}else{
+			produtoParaComparacao.setIDproduto(estoque.get(localEstoque).getIDproduto());
+			
+			produtoParaComparacao.setNome(estoque.get(localEstoque).getNome());
+			produtoParaComparacao.setQuantidade(estoque.get(localEstoque).getQuantidade());
+			produtoParaComparacao.setIDCategoria(estoque.get(localEstoque).getIDCategoria());
+			produtoParaComparacao.setPreco(estoque.get(localEstoque).getPreco());
+			
+			
+		}
+		
+		
+		if(novaQuantidade>produtoParaComparacao.getQuantidade()){
+			throw new QuantidadeInsuficienteException();
+		}
+		
+		if(!listaDeProdutos.contains(produtoA)){
+			listaDeProdutos.add(produtoA);
+			QuantidadeDeProdutos.add(novaQuantidade);
+			
+			return;
+			
+		}else{
+			localNoCarrinho=listaDeProdutos.indexOf(produtoA);
+			double quantidadeAtual=QuantidadeDeProdutos.get(localNoCarrinho);
+			if((quantidadeAtual+novaQuantidade)>produtoParaComparacao.getQuantidade()){
+				
+				throw new QuantidadeInsuficienteException();
+			}
+			QuantidadeDeProdutos.set(localNoCarrinho, quantidadeAtual+novaQuantidade);
+			return;
+		}
 
+	}
     
     
 }

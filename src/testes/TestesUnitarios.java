@@ -23,6 +23,7 @@ import NovasFuncionalidades.VendaContemPromocao;
 import NovasFuncionalidades.VendaModificada;
 import exception.CategoriaInexistenteException;
 import exception.ProdutoInexistenteException;
+import exception.ProdutosDiferentesException;
 import exception.ValorInvalidoException;
 import genus.Funcoes;
 import genus.Tipos.Categoria;
@@ -38,8 +39,8 @@ public class TestesUnitarios {
 
 	FuncionalidadesNovas funcionalidadesNovas;
 	
-	//@Mock
-	//private VendaModificada novaVenda;
+	@Mock
+	private VendaModificada novaVenda;
 	
 	List<Produto> listaDeProdutos;
 	List<Desconto>listaDeDescontos;
@@ -55,6 +56,7 @@ public class TestesUnitarios {
 		//listaDeVendaContem=new ArrayList<VendaContemPromocao>();
 		
 		funcionalidadesNovas = new FuncionalidadesNovas();
+		novaVenda = new VendaModificada();
 		
 		Produto auxiliarParaAlocacaoProdutos;
     	
@@ -81,7 +83,6 @@ public class TestesUnitarios {
     	
     	Produto produtoAuxiliar;
     	boolean existeProduto;
-    	FuncionalidadesNovas funcionalidadesNovas = new FuncionalidadesNovas();
     	
     	produtoAuxiliar = novasFuncionalidades.retornarProdutoPorID(1);
     	existeProduto = listaDeProdutos.get(0).equals(produtoAuxiliar);
@@ -241,17 +242,113 @@ public class TestesUnitarios {
     
     @Test
     public void testInserirVendaPorCodigo() {
+
+		novaVenda = new VendaModificada();
+		novaVenda.setEstoque(listaDeProdutos);
+		List<Produto> listaProdutosVenda = new ArrayList<Produto>();
+		List<Double> listaQuantidade = new ArrayList<Double>();
+    	Produto produtoAuxiliar = funcionalidadesNovas.retornarProdutoPorID(5);
     	
+    	novaVenda.adicionarAVenda(produtoAuxiliar, 5.0);
+    	
+    	listaProdutosVenda = novaVenda.getListaDeProdutos();
+    	listaQuantidade = novaVenda.getListaDeQuantidades();
+    	
+    	int quantidadeProdutos = listaProdutosVenda.size();
+    	double qntProdutoEspecifico;
+    	
+    	for(int i = 0; i < quantidadeProdutos; i++){
+    		if(listaProdutosVenda.get(i) == produtoAuxiliar){
+    			qntProdutoEspecifico = listaQuantidade.get(i);
+    			assertEquals(5.0, qntProdutoEspecifico, 0.00001);
+    			assertNotEquals(5.001, qntProdutoEspecifico, 0.00001);
+    			assertNotEquals(4.999, qntProdutoEspecifico, 0.00001);
+    		}
+    	}
     }
     
     @Test
     public void testInserirVendaPorNome() {
+    	
+    	novaVenda = new VendaModificada();
+		novaVenda.setEstoque(listaDeProdutos);
+		List<Produto> listaProdutosVenda = new ArrayList<Produto>();
+		List<Double> listaQuantidade = new ArrayList<Double>();
+    	Produto produtoAuxiliar = funcionalidadesNovas.retornarProdutoPorNome("mouse");
+    	
+    	novaVenda.adicionarAVenda(produtoAuxiliar, 2.0);
+    	
+    	listaProdutosVenda = novaVenda.getListaDeProdutos();
+    	listaQuantidade = novaVenda.getListaDeQuantidades();
+    	
+    	int quantidadeProdutos = listaProdutosVenda.size();
+    	double qntProdutoEspecifico;
+    	
+    	for(int i = 0; i < quantidadeProdutos; i++){
+    		if(listaProdutosVenda.get(i) == produtoAuxiliar){
+    			qntProdutoEspecifico = listaQuantidade.get(i);
+    			assertEquals(2.0, qntProdutoEspecifico, 0.00001);
+    			assertNotEquals(2.001, qntProdutoEspecifico, 0.00001);
+    			assertNotEquals(1.999, qntProdutoEspecifico, 0.00001);
+    		}
+    	}
     	
     }
     
     @Test
     public void testInserirVendaPorCodigoNome() {
     	
+    	novaVenda = new VendaModificada();
+		novaVenda.setEstoque(listaDeProdutos);
+		List<Produto> listaProdutosVenda = new ArrayList<Produto>();
+		List<Double> listaQuantidade = new ArrayList<Double>();
+    	Produto produtoAuxiliarNome = funcionalidadesNovas.retornarProdutoPorNome("mouse");
+    	Produto produtoAuxiliarID = funcionalidadesNovas.retornarProdutoPorID(3);
+
+		novaVenda.adicionarAVenda(produtoAuxiliarNome, produtoAuxiliarID, 2.0);
+    	
+    	listaProdutosVenda = novaVenda.getListaDeProdutos();
+    	listaQuantidade = novaVenda.getListaDeQuantidades();
+    	
+    	int quantidadeProdutos = listaProdutosVenda.size();
+    	double qntProdutoEspecifico;
+    	
+    	for(int i = 0; i < quantidadeProdutos; i++){
+    		if(listaProdutosVenda.get(i) == produtoAuxiliarNome){
+    			qntProdutoEspecifico = listaQuantidade.get(i);
+    			assertEquals(2.0, qntProdutoEspecifico, 0.00001);
+    			assertNotEquals(2.001, qntProdutoEspecifico, 0.00001);
+    			assertNotEquals(1.999, qntProdutoEspecifico, 0.00001);
+    		}
+    	}
+    }
+    
+    @Test(expected=ProdutosDiferentesException.class)
+    public void testInserirVendaPorCodigoNomeDiferentes() {
+    	
+    	novaVenda = new VendaModificada();
+		novaVenda.setEstoque(listaDeProdutos);
+		List<Produto> listaProdutosVenda = new ArrayList<Produto>();
+		List<Double> listaQuantidade = new ArrayList<Double>();
+    	Produto produtoAuxiliarNome = funcionalidadesNovas.retornarProdutoPorNome("teclado");
+    	Produto produtoAuxiliarID = funcionalidadesNovas.retornarProdutoPorID(7);
+
+		novaVenda.adicionarAVenda(produtoAuxiliarNome, produtoAuxiliarID, 2.0);
+    	
+    	listaProdutosVenda = novaVenda.getListaDeProdutos();
+    	listaQuantidade = novaVenda.getListaDeQuantidades();
+    	
+    	int quantidadeProdutos = listaProdutosVenda.size();
+    	double qntProdutoEspecifico;
+    	
+    	for(int i = 0; i < quantidadeProdutos; i++){
+    		if(listaProdutosVenda.get(i) == produtoAuxiliarNome){
+    			qntProdutoEspecifico = listaQuantidade.get(i);
+    			assertEquals(2.0, qntProdutoEspecifico, 0.00001);
+    			assertNotEquals(2.001, qntProdutoEspecifico, 0.00001);
+    			assertNotEquals(1.999, qntProdutoEspecifico, 0.00001);
+    		}
+    	}
     }
 
 }

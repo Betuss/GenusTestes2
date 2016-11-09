@@ -11,6 +11,7 @@ import java.util.List;
 
 import exception.CategoriaInexistenteException;
 import exception.ProdutoInexistenteException;
+import exception.ProdutosDiferentesException;
 import genus.Tipos.Categoria;
 import genus.Tipos.Produto;
 import genus.Tipos.Venda;
@@ -69,6 +70,16 @@ public class FuncionalidadesNovas {
 		
 		for(Produto produto : listaDeProdutos){
 			if(produto.getIDproduto() == idProduto){
+				return produto;
+			}
+		}
+		throw new ProdutoInexistenteException();
+	}
+	
+public Produto retornarProdutoPorNome(String nomeProduto) throws UnsupportedOperationException{
+		
+		for(Produto produto : listaDeProdutos){
+			if(produto.getNome() == nomeProduto){
 				return produto;
 			}
 		}
@@ -206,18 +217,5 @@ public class FuncionalidadesNovas {
 		throw new UnsupportedOperationException();
 		
 	}
-
-
-	
-
-
-	
-
-
-	
-	
-
-	
-	
 	
 }
