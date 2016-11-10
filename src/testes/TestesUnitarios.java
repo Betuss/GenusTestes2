@@ -264,6 +264,16 @@ public class TestesUnitarios {
     	}
     }
     
+    @Test(expected=ProdutoInexistenteException.class)
+    public void testInserirVendaPorCodigoInvalido() {
+
+		novaVenda = new VendaModificada();
+		novaVenda.setEstoque(listaDeProdutos);
+		List<Produto> listaProdutosVenda = new ArrayList<Produto>();
+		List<Double> listaQuantidade = new ArrayList<Double>();
+    	Produto produtoAuxiliar = funcionalidadesNovas.retornarProdutoPorID(50);
+    }
+    
     @Test
     public void testInserirVendaPorNome() {
     	
@@ -289,6 +299,17 @@ public class TestesUnitarios {
     			assertNotEquals(1.999, qntProdutoEspecifico, 0.00001);
     		}
     	}
+    	
+    }
+    
+    @Test(expected=ProdutoInexistenteException.class)
+    public void testInserirVendaPorNomeInvalido() {
+    	
+    	novaVenda = new VendaModificada();
+		novaVenda.setEstoque(listaDeProdutos);
+		List<Produto> listaProdutosVenda = new ArrayList<Produto>();
+		List<Double> listaQuantidade = new ArrayList<Double>();
+    	Produto produtoAuxiliar = funcionalidadesNovas.retornarProdutoPorNome("macbook");
     	
     }
     
