@@ -5,11 +5,15 @@
  */
 package NovasFuncionalidades;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import exception.CategoriaInexistenteException;
+import exception.FuncionarioNaoTrabalhaDiaException;
 import exception.ProdutoInexistenteException;
 import exception.ProdutosDiferentesException;
 import genus.Tipos.Categoria;
@@ -97,6 +101,20 @@ public Produto retornarProdutoPorNome(String nomeProduto) throws UnsupportedOper
 		throw new UnsupportedOperationException();
 	}
 	
+	public FuncionarioModificado retornarFuncionarioPorID(int idFunc){
+		
+		throw new UnsupportedOperationException();
+		
+		
+	}
+	
+	public Faltas retornarFaltaPorID(int idFalta){
+		
+		throw new UnsupportedOperationException();
+		
+		
+	}
+	
 	public Categoria retornarCategoriaPorID(int idCategoria){
 		
 		for(Categoria categoria : listaDeCategorias){
@@ -153,11 +171,6 @@ public Produto retornarProdutoPorNome(String nomeProduto) throws UnsupportedOper
 		
 	}
 	
-
-	
-
-	
-	
 	
 	public List<VendaContemPromocao> setarVendaContem(VendaModificada novaVenda,List<Desconto> listaDescontos){
 		List<VendaContemPromocao> novoVendaContem=new ArrayList<VendaContemPromocao>();
@@ -213,8 +226,227 @@ public Produto retornarProdutoPorNome(String nomeProduto) throws UnsupportedOper
 		
 	}
 	public void setarLotes(List<Lotes> listaLotes,Date dataAtual){
+		Date dataFimlote=new Date();
+		double quantidadeAtual;
+		for(int i=0;i<listaLotes.size();i++){
+			dataFimlote=listaLotes.get(i).getDataFimLote();
+			if(dataFimlote.before(dataAtual)){
+				quantidadeAtual=listaLotes.get(i).getQuantidadeAtual();
+				listaLotes.get(i).setQuantidadeAtual(0);
+				listaLotes.get(i).setQuantidadeDesperdicada(quantidadeAtual);
+			}
+		}
+				
+	}
+	
+	public int CalcularDiasTrabalhoNoMes(int ano, int mes, FuncionarioModificado func){
 		
-		throw new UnsupportedOperationException();
+		String diasTrabalho=func.getDiasTrabalho();
+		String[] parts = diasTrabalho.split("-");
+		
+		int totalDias=0;
+		
+		int quantosDiasTemOMes=0;
+		
+		int diaSemana;
+		
+		if(mes==1||mes==3||mes==5||mes==7||mes==8||mes==10||mes==12){
+			quantosDiasTemOMes=31;
+		}
+		
+		if(mes==4||mes==6||mes==9||mes==11){
+			quantosDiasTemOMes=31;
+		}
+		if(mes==2){
+			if(ano % 400 == 0){
+				quantosDiasTemOMes=29;
+
+	        } else if((ano % 4 == 0) && (ano % 100 != 0)){
+				quantosDiasTemOMes=29;
+
+	        } else{
+				quantosDiasTemOMes=28;
+	        }
+		}
+		
+		
+		for(int i=0;i<quantosDiasTemOMes;i++){
+			for(int k=0;k<parts.length;k++){
+				
+				Date dataFalsa=new Date(ano,mes,i);
+				diaSemana=dataFalsa.getDay();
+				String diaFuncionario=parts[k];
+				
+				if(diaSemana==0&&diaFuncionario.equalsIgnoreCase("DO")){
+					totalDias++;
+				}
+				if(diaSemana==1 && diaFuncionario.equalsIgnoreCase("SG")){
+					totalDias++;
+				}
+				if(diaSemana==2 && diaFuncionario.equalsIgnoreCase("TE")){
+					totalDias++;
+				}
+				if(diaSemana==3 && diaFuncionario.equalsIgnoreCase("QA")){
+					totalDias++;
+				}
+				if(diaSemana==4 && diaFuncionario.equalsIgnoreCase("QI")){
+					totalDias++;
+				}
+				if(diaSemana==5 && diaFuncionario.equalsIgnoreCase("SE")){
+					totalDias++;
+				}
+				if(diaSemana==6 && diaFuncionario.equalsIgnoreCase("SA")){
+					totalDias++;
+				}
+				  
+			}
+		}
+		return totalDias;
+	}
+
+
+	public int CalcularDiasTrabalhoNoMesComFalta(int ano, int mes, FuncionarioModificado func,
+		List<Faltas> listaFaltas) {
+		int diasFaltados=0;
+		List<Faltas> listaFiltrada=new ArrayList<Faltas>();
+		for(int i=0;i<listaFaltas.size();i++){
+			if(listaFaltas.get(i).getDataFalta().getYear()==ano&& listaFaltas.get(i).getDataFalta().getMonth()==mes){
+				Faltas faltaParaFiltrar=listaFaltas.get(i);
+				listaFiltrada.add(new Faltas(faltaParaFiltrar));
+				diasFaltados++;
+			}
+		}
+		
+		for(int i=0;i<listaFiltrada.size();i++){
+			
+		}
+		
+		
+		String diasTrabalho=func.getDiasTrabalho();
+		String[] parts = diasTrabalho.split("-");
+		
+		int totalDias=0;
+		
+		int quantosDiasTemOMes=0;
+		
+		int diaSemana;
+		
+		if(mes==1||mes==3||mes==5||mes==7||mes==8||mes==10||mes==12){
+			quantosDiasTemOMes=31;
+		}
+		
+		if(mes==4||mes==6||mes==9||mes==11){
+			quantosDiasTemOMes=31;
+		}
+		if(mes==2){
+			if(ano % 400 == 0){
+				quantosDiasTemOMes=29;
+
+	        } else if((ano % 4 == 0) && (ano % 100 != 0)){
+				quantosDiasTemOMes=29;
+
+	        } else{
+				quantosDiasTemOMes=28;
+	        }
+		}
+		
+		for(int i=0;i<quantosDiasTemOMes;i++){
+			for(int k=0;k<parts.length;k++){
+				
+				Date dataFalsa=new Date(ano,mes,i);
+				diaSemana=dataFalsa.getDay();
+				String diaFuncionario=parts[k];
+				if(diaSemana==0&&diaFuncionario.equalsIgnoreCase("DO")){
+					totalDias++;
+				}
+				if(diaSemana==1 && diaFuncionario.equalsIgnoreCase("SG")){
+					totalDias++;
+				}
+				if(diaSemana==2 && diaFuncionario.equalsIgnoreCase("TE")){
+					totalDias++;
+				}
+				if(diaSemana==3 && diaFuncionario.equalsIgnoreCase("QA")){
+					totalDias++;
+				}
+				if(diaSemana==4 && diaFuncionario.equalsIgnoreCase("QI")){
+					totalDias++;
+				}
+				if(diaSemana==5 && diaFuncionario.equalsIgnoreCase("SE")){
+					totalDias++;
+				}
+				if(diaSemana==6 && diaFuncionario.equalsIgnoreCase("SA")){
+					totalDias++;
+				}
+				  
+			}
+		}
+		return totalDias-diasFaltados;
+		
+		// TODO Auto-generated method stub
+	}
+	public void adicionarFalta(List<Faltas> listaDeFaltas, FuncionarioModificado Func,Date diaAtual){
+		String diaSemanda;
+		String dia="";
+		boolean achou=false;
+		
+		
+		 String input_date=diaAtual.getDate()+"/"+diaAtual.getMonth()+"/"+diaAtual.getYear();
+		 
+		  SimpleDateFormat format1=new SimpleDateFormat("dd/MM/yyyy");
+		  Date dt1 = null;
+		try {
+			dt1 = format1.parse(input_date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  DateFormat format2=new SimpleDateFormat("EEEE"); 
+		  String finalDay=format2.format(dt1);
+		  diaSemanda=finalDay;
+		  
+		
+		String diasTrabalho=Func.getDiasTrabalho();
+		String[] parts = diasTrabalho.split("-");
+		
+		for(int i=0;i<parts.length;i++){
+			dia="";
+			
+			if(parts[i].equalsIgnoreCase("DO")){
+				dia="Domingo";
+			}
+			if(parts[i].equalsIgnoreCase("SG")){
+				dia="Segunda-Feira";
+			}
+			if(parts[i].equalsIgnoreCase("TE")){
+				dia="Terça-Feira";
+			}
+			if(parts[i].equalsIgnoreCase("QA")){
+				dia="Quarta-Feira";
+			}
+			if(parts[i].equalsIgnoreCase("QI")){
+				dia="Quinta-Feira";
+			}
+			if(parts[i].equalsIgnoreCase("SE")){
+				dia="Sexta-Feira";
+			}
+			if(parts[i].equalsIgnoreCase("SA")){
+				dia="Sábado";
+			}
+			
+			if(dia.equalsIgnoreCase(diaSemanda)){
+				achou=true;
+			}
+		}
+		
+		if(achou==true){
+
+			int idfalta=listaDeFaltas.size()+1;
+			Faltas novaFalta=new Faltas(idfalta, Func.getIdFunc(), diaAtual);
+			listaDeFaltas.add(novaFalta);
+			
+		}else{
+			throw new FuncionarioNaoTrabalhaDiaException();
+		}
 		
 	}
 	

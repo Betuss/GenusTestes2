@@ -15,8 +15,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.mysql.fabric.xmlrpc.base.Data;
-
 import NovasFuncionalidades.Desconto;
 import NovasFuncionalidades.FuncionalidadesNovas;
 import NovasFuncionalidades.VendaContemPromocao;
@@ -25,7 +23,6 @@ import exception.CategoriaInexistenteException;
 import exception.ProdutoInexistenteException;
 import exception.ProdutosDiferentesException;
 import exception.ValorInvalidoException;
-import genus.Funcoes;
 import genus.Tipos.Categoria;
 import genus.Tipos.Funcionario;
 import genus.Tipos.Produto;
