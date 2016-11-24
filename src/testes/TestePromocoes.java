@@ -80,7 +80,7 @@ public class TestePromocoes {
 		
 		when(novasFuncionalidades.retornarDescontoPorID(0)).thenReturn(new Desconto(0,0,1,"Nenhum"));
 		when(novasFuncionalidades.retornarDescontoPorID(1)).thenReturn(new Desconto(1,1,0.2,"Liquidacao de Tomate"));
-		when(novasFuncionalidades.retornarDescontoPorID(2)).thenReturn(new Desconto(2,6,0.4,"Liquidacao de Sabï¿½o"));
+		when(novasFuncionalidades.retornarDescontoPorID(2)).thenReturn(new Desconto(2,6,0.4,"Liquidacao de Sabão"));
 		
 		
 		for(int j=1;j<=2;j++){
@@ -372,7 +372,7 @@ public class TestePromocoes {
     
     
     @Test    
-public void testFinalizarVenda() {
+	public void testFinalizarVenda() {
     	
     	
 		VendaModificada vendaTestaFinal=new VendaModificada();
@@ -385,7 +385,7 @@ public void testFinalizarVenda() {
 
 		
 		Produto produtoParaReceberProdutoDescontado=new Produto();
-		produtoParaReceberProdutoDescontado=funcionalidadesTeste.calcularDescontoProduto(produtoParaTestarDesconto, listaDeDescontos, listaDeProdutos);
+		produtoParaReceberProdutoDescontado=funcionalidadesTeste.calcularDescontoProduto(produtoParaTestarDesconto, listaDeDescontos,listaDeProdutos);
 		
 		vendaTestaFinal.adicionarAVenda(produtoParaReceberProdutoDescontado, 3);
 		
@@ -509,7 +509,7 @@ public void testFinalizarVenda() {
 		assertEquals(vendaTestaFinal.getValorTotal(),52.2,0.001);
 		
 		
-		vendaContem=funcionalidadesTeste.setarVendaContem(vendaTestaFinal, listaDeDescontos);
+		vendaContem=funcionalidadesTeste.setarVendaContem(vendaTestaFinal, listaDeDescontos,vendaContem.size());
 		
 		assertEquals(vendaContem.size(),2);
 		
