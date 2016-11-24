@@ -368,5 +368,46 @@ public class TestesUnitarios {
     		}
     	}
     }
+    
+    @Test
+    public void testDetalhamentoVenda(){
+    	novaVenda = new VendaModificada(1,1); //ID venda ID funcionário
+		novaVenda.setEstoque(listaDeProdutos);
+		
+    	Produto produto = funcionalidadesNovas.retornarProdutoPorNome("mouse");
+    	novaVenda.adicionarAVenda(produto, 2.0);
+    	produto = funcionalidadesNovas.retornarProdutoPorNome("tomate");
+    	novaVenda.adicionarAVenda(produto, 10.5);
+    	produto = funcionalidadesNovas.retornarProdutoPorNome("mouse");
+    	novaVenda.adicionarAVenda(produto, 1.0);
+    	
+    	assertEquals(1, novaVenda.getIDvendedor());
+    	
+    	assertEquals(0, novaVenda.getIDcliente());
+    	
+    	//Testando que a venda guarda a quantidade correta de produtos,
+    	//mesmo sendo fracionada ou com adições separadas à venda.
+    	assertNotEquals(1.0, novaVenda.retornarQuantidadeProduto("mouse"), 0.0001);
+    	assertNotEquals(2.0, novaVenda.retornarQuantidadeProduto("mouse"), 0.0001);
+    	assertNotEquals(3.001, novaVenda.retornarQuantidadeProduto("mouse"), 0.0001);
+    	assertNotEquals(2.999, novaVenda.retornarQuantidadeProduto("mouse"), 0.0001);
+    	assertEquals(3.0, novaVenda.retornarQuantidadeProduto("mouse"), 0.0001);
+    	assertNotEquals(10.49, novaVenda.retornarQuantidadeProduto("tomate"), 0.0001);
+    	assertNotEquals(10.51, novaVenda.retornarQuantidadeProduto("tomate"), 0.0001);
+    	assertEquals(10.5, novaVenda.retornarQuantidadeProduto("tomate"), 0.0001);
+    	
+    	//Testando o valor total da venda
+    	assertEquals(66.75, novaVenda.getValorTotal(), 0.0001);
+    	assertNotEquals(66.74, novaVenda.getValorTotal(), 0.0001);
+    	assertNotEquals(66.76, novaVenda.getValorTotal(), 0.0001);
+    	
+    	//Testando que retorna o clietne correto, mesmo após alteração
+    	novaVenda.setIDcliente(123456789);
+    	assertNotEquals(0, novaVenda.getIDcliente(), 0.0001);
+    	assertNotEquals(123456789.01, novaVenda.getIDcliente(), 0.0001);
+    	assertNotEquals(123456788.99, novaVenda.getIDcliente(), 0.0001);
+    	assertEquals(123456789, novaVenda.getIDcliente());
+
+    }
 
 }

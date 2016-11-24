@@ -34,14 +34,9 @@ public class VendaModificada {
 	
 	public VendaModificada() {
 		
-		
     }
 
     public VendaModificada(int IDvenda, int IDvendedor) {
-    	
-    	
-    	
-    	
         this.IDvenda = IDvenda;
         this.IDvendedor = IDvendedor;
         ValorTotal = 0;
@@ -63,16 +58,25 @@ public class VendaModificada {
     public VendaModificada(int IDvenda, int IDvendedor, int IDcliente, double ValorTotal,Date novaData) {
         this.IDvenda = IDvenda;
         this.IDvendedor = IDvendedor;
-        
         this.ValorTotal = ValorTotal;
         this.IDcliente = IDcliente;
         this.dataVenda=novaData;
     }
-    
-    
 
     public int getIDvenda() {
         return IDvenda;
+    }
+    
+    public int getIDvendedor() {
+    	return IDvendedor;
+    }
+    
+    public int getIDcliente() {
+    	return IDcliente;
+    }
+    
+    public void setIDcliente(int novoCliente) {
+    	this.IDcliente = novoCliente;
     }
 
     public void atualizaValorTotal(double valor){
@@ -84,8 +88,6 @@ public class VendaModificada {
         ValorTotal = Math.round(ValorTotal * 100.0) / 100.0;
         return ValorTotal;
     }
-    
-   
 
 	public List<Produto> getListaDeProdutos() {
 		return listaDeProdutos;
@@ -155,7 +157,7 @@ public class VendaModificada {
 		if(!listaDeProdutos.contains(produtoParaVenda)){
 			listaDeProdutos.add(produtoParaVenda);
 			QuantidadeDeProdutos.add(novaQuantidade);
-			
+			atualizaValorTotal(produtoParaVenda.getPreco() * novaQuantidade);
 			return;
 			
 		}else{
@@ -166,6 +168,7 @@ public class VendaModificada {
 				throw new QuantidadeInsuficienteException();
 			}
 			QuantidadeDeProdutos.set(localNoCarrinho, quantidadeAtual+novaQuantidade);
+			atualizaValorTotal(produtoParaVenda.getPreco() * novaQuantidade);
 			return;
 		}
 
@@ -338,5 +341,13 @@ public void adicionarAVenda(Produto produtoA, Produto produtoB, double novaQuant
 
 	}
     
-    
+    public double retornarQuantidadeProduto(String nomeProduto){
+    	
+    	for(Produto produto : listaDeProdutos){
+    		if(produto.getNome().equals(nomeProduto)){
+    			return QuantidadeDeProdutos.get(listaDeProdutos.indexOf(produto));
+    		}
+    	}
+    	return 0.0;
+    }
 }
